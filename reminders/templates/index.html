@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Hello, my firt attempt to build reminders app!</h1>
+<div>
+    <a href="{% url 'about' %}" class="text-teal-700 hover:underline">About</a>
+</div>
+<div>
+    <a href="{% url 'monthly_reminder' %}" class="text-teal-700 hover:underline">Go to Monthly Reminders</a>
+</div>
+{% endblock %}

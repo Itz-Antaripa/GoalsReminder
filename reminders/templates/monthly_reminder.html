@@ -1,0 +1,188 @@
+{% load static widget_tweaks %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Planned Reminders</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background-color: #ebd0ea;
+        }
+        .reminder-card {
+            background-color: #efcdee;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            margin: 2rem auto;
+        }
+        .header {
+            background-color: #deaade;
+            color: #8c3271;
+            padding: 1rem;
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+        }
+        .task-list {
+            padding: 1rem;
+        }
+        .task-item {
+            margin-bottom: 0.5rem;
+        }
+        .category-header {
+            font-weight: 600;
+            margin-top: 1rem;
+            margin-bottom: 0.5rem;
+        }
+        .add-task {
+            background-color: #deaade;
+            color: #8c3271;
+            padding: 0.75rem;
+            text-align: center;
+            cursor: pointer;
+        }
+        .home-link {
+            text-align: center;
+            padding: 0.75rem;
+            color: #8c3271;
+        }
+        .checkbox {
+            appearance: none;
+            border: 1px solid #8c3271;
+            border-radius: 3px;
+            width: 18px;
+            height: 18px;
+            vertical-align: middle;
+            margin-right: 0.5rem;
+        }
+        .checkbox:checked {
+            background-color: #8c3271;
+            border-color: #8c3271;
+        }
+        .form-input {
+            width: 100%;
+            padding: 0.5rem;
+            margin-bottom: 0.5rem;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="reminder-card">
+        <div class="header">
+            <h1 class="text-xl font-semibold flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>                            
+                Plannzz
+            </h1>
+        </div>
+        
+        <div class="task-list">
+            {% for category, category_name in form.fields.category.choices %}
+                <h2 class="category-header">{{ category_name }}</h2>
+                {% for task in tasks %}
+                    {% if task.category == category %}
+                        <div class="task-item flex items-center">
+                            <form method="POST" action="{% url 'toggle_task' task.id %}" class="flex items-center flex-grow">
+                                {% csrf_token %}
+                                <input type="checkbox" class="checkbox" {% if task.is_completed %}checked{% endif %} onchange="this.form.submit()">
+                                <span class="{% if task.is_completed %}line-through{% endif %}">{{ task.title }}</span>
+                            </form>
+                            <form method="POST" action="{% url 'delete_task' task.id %}" class="ml-2">
+                                {% csrf_token %}
+                                <button type="submit" class="text-red-500 hover:text-red-700">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd" d="M6 8a1 1 0 00-.993.883L5 9v7a2 2 0 001.85 1.995L7 18h6a2 2 0 001.995-1.85L15 16V9a1 1 0 00-.883-.993L14 8H6zm2 2h4a1 1 0 01.117 1.993L12 12H8a1 1 0 01-.117-1.993L8 10zm2-8a3 3 0 012.995 2.824L13 5v1h3a1 1 0 01.117 1.993L16 8h-1v8a4 4 0 01-3.8 3.995L11 20H9a4 4 0 01-3.995-3.8L5 16V8H4a1 1 0 01-.117-1.993L4 6h3V5a3 3 0 012.824-2.995L10 2h2zm0 2h-2a1 1 0 00-1 1v1h4V5a1 1 0 00-1-1z" clip-rule="evenodd" />
+                                    </svg>
+                                </button>
+                            </form>
+                            
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            {% endfor %}
+        </div>
+        
+        <div id="add-task-button" class="add-task">
+            + Add a task
+        </div>
+        
+        <form id="add-task-form" method="POST" action="{% url 'add_task' %}" class="p-4 hidden">
+            {% csrf_token %}
+            {{ form.title.label_tag }}
+            {{ form.title|add_class:"form-input" }}
+            {{ form.category.label_tag }}
+            {{ form.category|add_class:"form-input" }}
+            <label for="task_date">Date:</label>
+            <input type="date" id="task_date" name="task_date" class="form-input" required>
+            <button type="submit" class="w-full p-2 bg-teal-600 text-white rounded hover:bg-teal-700">Add Task</button>
+        </form>
+        
+        <div class="home-link">
+            <a href="{% url 'index' %}">Go to Home Page</a>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const addTaskButton = document.getElementById('add-task-button');
+            const addTaskForm = document.getElementById('add-task-form');
+            const categorySelect = document.getElementById('id_category');
+            const taskDateInput = document.getElementById('task_date');
+
+            function updateAddTaskForm() {
+                const now = new Date();
+                const today = now.toISOString().split('T')[0];
+                taskDateInput.value = today;
+                taskDateInput.min = today;
+
+                const dayOfWeek = now.getDay();
+                const hour = now.getHours();
+
+                let category;
+
+                if (dayOfWeek === 0 || (dayOfWeek === 6 && hour >= 18)) {
+                    category = 'sunday';
+                } else if (hour >= 18) {
+                    category = 'tomorrow';
+                } else {
+                    category = 'today';
+                }
+
+                categorySelect.value = category;
+            }
+
+            updateAddTaskForm();
+
+            addTaskButton.addEventListener('click', function() {
+                addTaskForm.style.display = addTaskForm.style.display === 'none' ? 'block' : 'none';
+                updateAddTaskForm();
+            });
+
+            taskDateInput.addEventListener('change', function() {
+                const selectedDate = new Date(this.value);
+                const dayOfWeek = selectedDate.getDay();
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+
+                let category;
+
+                if (selectedDate.getTime() === today.getTime()) {
+                    category = 'today';
+                } else if (selectedDate.getTime() === today.getTime() + 86400000) {
+                    category = 'tomorrow';
+                } else if (dayOfWeek === 0) {
+                    category = 'sunday';
+                } else {
+                    category = 'earlier';
+                }
+
+                categorySelect.value = category;
+            });
+        });
+    </script>
+</body>
+</html>
