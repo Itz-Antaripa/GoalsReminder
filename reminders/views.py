@@ -13,7 +13,12 @@ def about(request):
 def monthly_reminder(request):
     tasks = Task.objects.all().order_by('category', '-created_at')
     form = TaskForm()
-    return render(request, 'monthly_reminder.html', {'tasks': tasks, 'form': form})
+    categories = Task.CATEGORY_CHOICES
+    return render(request, 'monthly_reminder.html', {
+        'tasks': tasks, 
+        'form': form, 
+        'categories': categories
+    })
 
 @require_POST
 def add_task(request):
