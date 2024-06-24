@@ -1,3 +1,11 @@
+function openEditForm(taskId, title, category, dueDate) {
+    document.getElementById('edit-task-title').value = title;
+    document.getElementById('edit-task-category').value = category;
+    document.getElementById('edit-task-date').value = dueDate;
+    document.getElementById('edit-task-form').action = `/edit_task/${taskId}/`;
+    document.getElementById('edit-task-modal').classList.remove('hidden');
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     const addTaskButton = document.getElementById('add-task-button');
     const addTaskForm = document.getElementById('add-task-form');
@@ -56,5 +64,13 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         categorySelect.value = category;
+    });
+
+    const editTaskModal = document.getElementById('edit-task-modal');
+    
+    editTaskModal.addEventListener('click', function(e) {
+        if (e.target === editTaskModal) {
+            editTaskModal.classList.add('hidden');
+        }
     });
 });

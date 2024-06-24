@@ -10,6 +10,17 @@ def index(request):
 def about(request):
     return render(request, 'about.html')
 
+from django.shortcuts import get_object_or_404, redirect
+
+def edit_task(request, task_id):
+    task = get_object_or_404(Task, id=task_id)
+    if request.method == 'POST':
+        task.title = request.POST.get('title')
+        task.category = request.POST.get('category')
+        task.due_date = request.POST.get('due_date')
+        task.save()
+    return redirect('monthly_reminder')
+
 def monthly_reminder(request):
     tasks = Task.objects.all().order_by('category', '-created_at')
     form = TaskForm()

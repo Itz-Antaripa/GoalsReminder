@@ -31,6 +31,11 @@
                                 <input type="checkbox" class="checkbox" {% if task.is_completed %}checked{% endif %} onchange="this.form.submit()">
                                 <span class="{% if task.is_completed %}line-through{% endif %}">{{ task.title }}</span>
                             </form>
+                            <button onclick="openEditForm('{{ task.id }}', '{{ task.title }}', '{{ task.category }}', '{{ task.due_date|date:'Y-m-d' }}')" class="ml-2 text-[#8c3271] hover:text-[#6e2759]">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                    <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
+                                </svg>
+                            </button>
                             <form method="POST" action="{% url 'delete_task' task.id %}" class="ml-2">
                                 {% csrf_token %}
                                 <button type="submit" class="text-red-500 hover:text-red-700">
@@ -39,7 +44,6 @@
                                     </svg>
                                 </button>
                             </form>
-                            
                         </div>
                     {% endif %}
                 {% endfor %}
@@ -60,6 +64,29 @@
             <input type="date" id="task_date" name="task_date" class="form-input" required>
             <button type="submit" class="w-full p-2 bg-teal-600 text-white rounded hover:bg-teal-700 mt-2">Add Task</button>
         </form>
+    </div>
+
+    <div id="edit-task-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden">
+        <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+            <div class="mt-3 text-center">
+                <h3 class="text-lg leading-6 font-medium text-gray-900">Edit Task</h3>
+                <form id="edit-task-form" method="POST" action="" class="mt-2">
+                    {% csrf_token %}
+                    <input type="text" id="edit-task-title" name="title" class="form-input" required>
+                    <select id="edit-task-category" name="category" class="form-input mt-2">
+                        {% for value, name in form.fields.category.choices %}
+                            <option value="{{ value }}">{{ name }}</option>
+                        {% endfor %}
+                    </select>
+                    <input type="date" id="edit-task-date" name="due_date" class="form-input mt-2" required>
+                    <div class="items-center px-4 py-3">
+                        <button id="edit-task-submit" type="submit" class="px-4 py-2 bg-[#8c3271] text-white text-base font-medium rounded-md w-full shadow-sm hover:bg-[#6e2759] focus:outline-none focus:ring-2 focus:ring-[#8c3271]">
+                            Save Changes
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
 
 </body>
