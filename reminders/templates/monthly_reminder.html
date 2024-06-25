@@ -10,84 +10,103 @@
     <script src="{% static 'script.js' %}" defer></script>
 </head>
 <body>
-    <div class="reminder-card">
-        <div class="header">
-            <h1 class="text-xl font-semibold flex items-center">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                </svg>                            
-                Plannzz...
-            </h1>
-        </div>
-        
-        <div class="task-list">
-            {% for category, category_name in form.fields.category.choices %}
-                <h2 class="category-header">{{ category_name }}</h2>
-                {% for task in tasks %}
-                    {% if task.category == category %}
-                        <div class="task-item flex items-center">
-                            <form method="POST" action="{% url 'toggle_task' task.id %}" class="flex items-center flex-grow">
-                                {% csrf_token %}
-                                <input type="checkbox" class="checkbox" {% if task.is_completed %}checked{% endif %} onchange="this.form.submit()">
-                                <span class="{% if task.is_completed %}line-through{% endif %}">{{ task.title }}</span>
-                            </form>
-                            <button onclick="openEditForm('{{ task.id }}', '{{ task.title }}', '{{ task.category }}', '{{ task.due_date|date:'Y-m-d' }}')" class="ml-2 text-[#8c3271] hover:text-[#6e2759]">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                                    <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
-                                </svg>
-                            </button>
-                            <form method="POST" action="{% url 'delete_task' task.id %}" class="ml-2">
-                                {% csrf_token %}
-                                <button type="submit" class="text-red-500 hover:text-red-700">
+    <div class="background-animation">
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="shape"></div>
+    </div>
+    <div class="wrapper">
+        <div class="reminder-card">
+            <div class="header">
+                <h1 class="text-xl font-semibold flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>                            
+                    Plannzz...
+                </h1>
+            </div>
+            
+            <div class="task-list">
+                {% for category, category_name in form.fields.category.choices %}
+                    <h2 class="category-header">{{ category_name }}</h2>
+                    {% for task in tasks %}
+                        {% if task.category == category %}
+                            <div class="task-item flex items-center">
+                                <form method="POST" action="{% url 'toggle_task' task.id %}" class="flex items-center flex-grow">
+                                    {% csrf_token %}
+                                    <input type="checkbox" class="checkbox" {% if task.is_completed %}checked{% endif %} onchange="this.form.submit()">
+                                    <span class="{% if task.is_completed %}line-through{% endif %}">{{ task.title }}</span>
+                                </form>
+                                <button onclick="openEditForm('{{ task.id }}', '{{ task.title }}', '{{ task.category }}', '{{ task.due_date|date:'Y-m-d' }}')" class="ml-2 text-[#8c3271] hover:text-[#6e2759]">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                                        <path fill-rule="evenodd" d="M6 8a1 1 0 00-.993.883L5 9v7a2 2 0 001.85 1.995L7 18h6a2 2 0 001.995-1.85L15 16V9a1 1 0 00-.883-.993L14 8H6zm2 2h4a1 1 0 01.117 1.993L12 12H8a1 1 0 01-.117-1.993L8 10zm2-8a3 3 0 012.995 2.824L13 5v1h3a1 1 0 01.117 1.993L16 8h-1v8a4 4 0 01-3.8 3.995L11 20H9a4 4 0 01-3.995-3.8L5 16V8H4a1 1 0 01-.117-1.993L4 6h3V5a3 3 0 012.824-2.995L10 2h2zm0 2h-2a1 1 0 00-1 1v1h4V5a1 1 0 00-1-1z" clip-rule="evenodd" />
+                                        <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
                                     </svg>
                                 </button>
-                            </form>
-                        </div>
-                    {% endif %}
+                                <form method="POST" action="{% url 'delete_task' task.id %}" class="ml-2">
+                                    {% csrf_token %}
+                                    <button type="submit" class="text-[#8c3271] hover:text-[#6e2759]">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                            <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
+                                        </svg>
+                                    </button>
+                                </form>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
                 {% endfor %}
-            {% endfor %}
-        </div>
-
-        <div id="add-task-button" class="add-task">
-            + Add a task
-        </div>
-        
-        <form id="add-task-form" method="POST" action="{% url 'add_task' %}" class="hidden">
-            {% csrf_token %}
-            {{ form.title.label_tag }}
-            {{ form.title|add_class:"form-input" }}
-            {{ form.category.label_tag }}
-            {{ form.category|add_class:"form-input" }}
-            <label for="task_date">Date:</label>
-            <input type="date" id="task_date" name="task_date" class="form-input" required>
-            <button type="submit" class="w-full p-2 bg-teal-600 text-white rounded hover:bg-teal-700 mt-2">Add Task</button>
-        </form>
-    </div>
-
-    <div id="edit-task-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden">
-        <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
-            <div class="mt-3 text-center">
-                <h3 class="text-lg leading-6 font-medium text-gray-900">Edit Task</h3>
-                <form id="edit-task-form" method="POST" action="" class="mt-2">
-                    {% csrf_token %}
-                    <input type="text" id="edit-task-title" name="title" class="form-input" required>
-                    <select id="edit-task-category" name="category" class="form-input mt-2">
-                        {% for value, name in form.fields.category.choices %}
-                            <option value="{{ value }}">{{ name }}</option>
-                        {% endfor %}
-                    </select>
-                    <input type="date" id="edit-task-date" name="due_date" class="form-input mt-2" required>
-                    <div class="items-center px-4 py-3">
-                        <button id="edit-task-submit" type="submit" class="px-4 py-2 bg-[#8c3271] text-white text-base font-medium rounded-md w-full shadow-sm hover:bg-[#6e2759] focus:outline-none focus:ring-2 focus:ring-[#8c3271]">
-                            Save Changes
-                        </button>
+            </div>
+    
+            <div id="add-task-button" class="add-task">
+                + Add a task
+            </div>
+            
+            <div id="add-task-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden">
+                <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+                    <div class="mt-3 text-center">
+                        <h3 class="text-lg leading-6 font-medium text-gray-900">Add Task</h3>
+                        <form id="add-task-form" method="POST" action="{% url 'add_task' %}" class="mt-2">
+                            {% csrf_token %}
+                            <input type="text" id="task_title" name="title" class="form-input" placeholder="Task" required>
+                            <select id="task_category" name="category" class="form-input mt-2">
+                                {% for value, name in form.fields.category.choices %}
+                                    <option value="{{ value }}">{{ name }}</option>
+                                {% endfor %}
+                            </select>
+                            <input type="date" id="task_date" name="task_date" class="form-input mt-2" required>
+                            <div class="items-center px-4 py-3">
+                                <button type="submit" class="px-4 py-2 bg-[#8c3271] text-white text-base font-medium rounded-md w-full shadow-sm hover:bg-[#6e2759] focus:outline-none focus:ring-2 focus:ring-[#a473ae]">
+                                    Add Task
+                                </button>
+                            </div>
+                        </form>
                     </div>
-                </form>
+                </div>
+            </div>
+        </div>
+    
+        <div id="edit-task-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden">
+            <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+                <div class="mt-3 text-center">
+                    <h3 class="text-lg leading-6 font-medium text-gray-900">Edit Task</h3>
+                    <form id="edit-task-form" method="POST" action="" class="mt-2">
+                        {% csrf_token %}
+                        <input type="text" id="edit-task-title" name="title" class="form-input" required>
+                        <select id="edit-task-category" name="category" class="form-input mt-2">
+                            {% for value, name in form.fields.category.choices %}
+                                <option value="{{ value }}">{{ name }}</option>
+                            {% endfor %}
+                        </select>
+                        <input type="date" id="edit-task-date" name="due_date" class="form-input mt-2" required>
+                        <div class="items-center px-4 py-3">
+                            <button id="edit-task-submit" type="submit" class="px-4 py-2 bg-[#8c3271] text-white text-base font-medium rounded-md w-full shadow-sm hover:bg-[#6e2759] focus:outline-none focus:ring-2 focus:ring-[#8c3271]">
+                                Save Changes
+                            </button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
-
 </body>
+    
 </html>

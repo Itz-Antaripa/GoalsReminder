@@ -1,15 +1,85 @@
 body {
     background-color: #ddbedd;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    position: relative;
 }
+
+.background-animation {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: -1;
+}
+
+.shape {
+    position: absolute;
+    background-color: rgba(164, 115, 174, 0.2);
+    border-radius: 50%;
+}
+
+.shape:nth-child(1) {
+    width: 200px;
+    height: 200px;
+    left: -100px;
+    top: 10%;
+    animation: float 15s infinite;
+}
+
+.shape:nth-child(2) {
+    width: 300px;
+    height: 300px;
+    right: -150px;
+    top: 40%;
+    animation: float 18s infinite reverse;
+}
+
+.shape:nth-child(3) {
+    width: 150px;
+    height: 150px;
+    left: 20%;
+    bottom: -75px;
+    animation: float 12s infinite;
+}
+
+@keyframes float {
+    0% {
+        transform: translateX(0) rotate(0deg);
+    }
+    50% {
+        transform: translateX(400px) rotate(180deg);
+    }
+    100% {
+        transform: translateX(0) rotate(360deg);
+    }
+}
+
+.wrapper {
+    width: 100%;
+    max-width: 500px;
+    padding: 20px;
+    z-index: 1;
+}
+
 .reminder-card {
-    background-color: #ebd0ea;
+    background-color: rgba(235, 208, 234, 0.9);
+    backdrop-filter: blur(10px);
     border-radius: 8px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     max-width: 400px;
+    width: 90%;
     margin: 2rem auto;
     padding-bottom: 1rem;
-    overflow: hidden; /* This ensures child elements don't overflow rounded corners */
 }
+
+
 .header {
     background-color: #a473ae;
     color: #602b50;
@@ -17,17 +87,21 @@ body {
     border-top-left-radius: 8px;
     border-top-right-radius: 8px;
 }
+
 .task-list {
     padding: 1rem;
 }
+
 .task-item {
     margin-bottom: 0.5rem;
 }
+
 .category-header {
     font-weight: 600;
     margin-top: 1rem;
     margin-bottom: 0.5rem;
 }
+
 .add-task {
     background-color: #a473ae;
     color: #602b50;
@@ -40,14 +114,12 @@ body {
     border-radius: 8px;
     margin: 1rem;
 }
+
 .add-task:hover {
     background-color: #805c87;
     color: #e3b3e0;
 }
-.add-task:last-child {
-    border-bottom-left-radius: 8px;
-    border-bottom-right-radius: 8px;
-}
+
 .checkbox {
     appearance: none;
     border: 1px solid #8c3271;
@@ -57,10 +129,12 @@ body {
     vertical-align: middle;
     margin-right: 0.5rem;
 }
+
 .checkbox:checked {
     background-color: #8c3271;
     border-color: #8c3271;
 }
+
 .form-input {
     width: 100%;
     padding: 0.5rem;
@@ -68,29 +142,30 @@ body {
     border: 1px solid #ccc;
     border-radius: 4px;
 }
-#add-task-form {
-    background-color: white;
+
+.form-input::placeholder {
+    color: #999;
+}
+
+#add-task-modal, #edit-task-modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.4);
+}
+
+#add-task-modal .modal-content, #edit-task-modal .modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 400px;
     border-radius: 8px;
-    padding: 1rem;
-    margin: 1rem;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-#add-task-form label {
-    display: block;
-    margin-bottom: 0.25rem;
-    color: #8c3271;
-}
-#add-task-form button[type="submit"] {
-    background-color: #8c3271;
-    color: white;
-    padding: 0.5rem;
-    border-radius: 4px;
-    border: none;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-#add-task-form button[type="submit"]:hover {
-    background-color: #6e2759;
 }
 .fixed {
     position: fixed;
